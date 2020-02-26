@@ -1,28 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
-import { Page, Tab, Tabbar } from 'react-onsenui';
-import { Start } from './components/Start';
-
-const tabs = [
-  ['Start', 'md-view-module', <Start key="Start" />]
-];
+import { Page } from 'react-onsenui';
+import { EyeDropper } from './components/EyeDropper';
 
 const App = () => {
   const [tab, setTab] = useState();
 
   return (
     <Page>
-      <Tabbar
-        onPreChange={({ index }) => setTab(index)}
-        position="bottom"
-        index={tab}
-        renderTabs={() =>
-          tabs.map(([label, icon, component]) => ({
-            content: component,
-            tab: <Tab key={label} label={label} icon={icon} />
-          }))
-        }
-      />
+      <EyeDropper />
     </Page>
   );
 };

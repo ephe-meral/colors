@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import { AlertDialog, Button, Col, Range, Row, ToolbarButton } from 'react-onsenui';
+import { AlertDialog, Button, Col, Icon, Range, Row, ToolbarButton } from 'react-onsenui';
 import CameraPhoto, { FACING_MODES } from 'jslib-html5-camera-photo';
 import { TabPage } from './TabPage';
 import { Colors } from '../utils/Colors';
@@ -57,7 +57,11 @@ const Alert = ({ text, open }) => {
   );
 };
 
-const Start = () => {
+const itoh = i => (Number(i).toString(16).length < 2 ? '0' : '') + Number(i).toString(16);
+const rgb = array => `rgb(${array.join(',')})`;
+const hex = array => `#${array.map(x => itoh(x)).join('')}`;
+
+const EyeDropper = () => {
   const [error, setError] = useState();
   const [videoRef, setVideoRef] = useState(React.createRef());
   const [camera, setCamera] = useState();
@@ -80,7 +84,7 @@ const Start = () => {
     }
   }, [camera, cameraEnabled]);
 
-  const [color, setColor] = useState('rgb(0,0,0)');
+  const [color, setColor] = useState([0,0,0]);
   const [colorName, setColorName] = useState('none');
   const [dataUri, setDataUri] = useState('');
 
@@ -88,7 +92,7 @@ const Start = () => {
     const id = setInterval(() => {
       if (camera && cameraEnabled) {
         const [R, G, B] = getColorAvg(videoRef.current, scale);
-        setColor(`rgb(${R}, ${G}, ${B})`);
+        setColor([R, G, B]);
         setColorName(Colors.nearestColor(R, G, B).word);
       }
     }, 1000);
@@ -102,7 +106,7 @@ const Start = () => {
 
   return (
     <TabPage
-      label={`Color: ${colorName}`}
+      label="EyeDropper"
       rightButton={
         <ToolbarButton
           icon={cameraEnabled ? 'md-videocam-off' : 'md-videocam'}
@@ -116,6 +120,7 @@ const Start = () => {
             css={`
               position: relative;
               height: 100%;
+              ${!cameraEnabled ? 'display: none;' : ''}
 
               &::before {
                 content: ${'""'};
@@ -124,7 +129,7 @@ const Start = () => {
                 left: ${left}px;
                 height: ${rectHeight}px;
                 width: ${rectWidth}px;
-                outline: 5px solid ${color};
+                outline: ${cameraEnabled ? 5 : 0}px solid ${rgb(color)};
                 background: rgba(0, 0, 0, 0);
                 z-index: 1;
               }
@@ -133,17 +138,62 @@ const Start = () => {
             <video css="max-width: 100%" ref={videoRef} autoPlay="true" />
           </div>
         </Row>
-        <Row>
-          <Range
-            css="width: 100%"
-            value={scale}
-            onChange={event => setScale(parseInt(event.target.value))}
-          />
-        </Row>
+        {cameraEnabled ? (
+          <>
+            <Row>
+              <Col width="40px" css="text-align: center; line-height: 31px;">
+                <Icon size={14} icon="md-crop-square" />
+              </Col>
+              <Col>
+                <Range
+                  css="width: 100%"
+                  value={scale}
+                  onChange={event => setScale(parseInt(event.target.value))}
+                />
+              </Col>
+              <Col width="40px" css="text-align: center; line-height: 31px;">
+                <Icon size={26} icon="md-crop-square" />
+              </Col>
+            </Row>
+            <Row css="margin-bottom: 0.5em">
+              <div
+                css={`
+                  display: grid;
+                  grid-template: repeat(2, 1fr) / 4em 1.5em 1fr;
+                `}
+              >
+                <div>Average:</div>
+                <div
+                  css={`
+                    width: 1em;
+                    height: 1em;
+                    margin: 0 0.3em;
+                    background: ${rgb(color)};
+                  `}
+                />
+                <div>{hex(color)}</div>
+                <div>Closest:</div>
+                <div
+                  css={`
+                    width: 1em;
+                    height: 1em;
+                    margin: 0 0.3em;
+                    background: ${rgb(Colors.getCss(colorName))};
+                  `}
+                />
+                <div>{`${hex(Colors.getCss(colorName))} ${colorName} `}</div>
+              </div>
+            </Row>
+          </>
+        ) : (
+          <Row>
+            <p>Camera disabled. Enable to estimate colors.</p>
+          </Row>
+        )}
       </Col>
       <Alert text={error} open={!!error} />
     </TabPage>
   );
 };
 
-export { Start };
+export { EyeDropper };

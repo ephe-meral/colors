@@ -1,11 +1,16 @@
 ### PWA quick-start
 
-PWA template with OnsenUI and Creat-React-App.
-Please note that you'll still have to `npm install` and:
+[![Netlify Status](https://api.netlify.com/api/v1/badges/00d0bc9c-c46a-41d9-ab8c-d67d26c9483d/deploy-status)](https://colors-pwa.netlify.app)
 
-1. Choose an app name and description and update `package.json`, `public/index.html`, `public/manifest.json`
-2. Update create-react-app stuff [as described here](https://create-react-app.dev/docs/updating-to-new-releases/)
-3. Update the dependencies `npx ncu`
-4. Add a logo (replace the `public/logo.svg`) and run the PWA asset generator `npm run build-assets`
+A real-life eye dropper for color selection based on camera input.
+One of the main purposes of this was also to find a name for the color that comes closest.
+I added the XKCD color set for this purpose.
+Closest colors are determined based on euclidian distance of the RGB vectors.
 
-Run the app with `npm start`.
+#### try
+
+[https://colors-pwa.netlify.com](https://colors-pwa.netlify.com)
+
+#### is it any good?
+
+Bien sûr.

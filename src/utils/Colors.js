@@ -25,6 +25,10 @@ class Colors {
       }))
       .sort((a, b) => a.distance - b.distance)[0];
   }
+
+  static getCss(name) {
+    return colors[name] ? Array.from(colors[name].dataSync()) : [0, 0, 0];
+  }
 }
 
 export { Colors };
